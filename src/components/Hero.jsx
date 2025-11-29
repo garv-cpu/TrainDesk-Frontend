@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Menu, X, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { usePricing } from "../utils/PricingContext";
+import usePricingOrLogin from "../hooks/usePricingOrLogin";
 
 const Hero = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -25,7 +26,6 @@ const Hero = () => {
           <div className="hidden md:flex items-center gap-8 text-sm">
             <a className="hover:text-blue-600" href="#features">Features</a>
             <a onClick={openPricing} className="hover:text-blue-600" href="#pricing">Pricing</a>
-            <a className="hover:text-blue-600" href="#dashboard">Dashboard</a>
             <Link to='/login' className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
               Login
             </Link>

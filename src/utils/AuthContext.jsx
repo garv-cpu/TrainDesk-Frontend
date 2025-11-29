@@ -11,20 +11,49 @@ export const AuthProvider = ({ children }) => {
   const [hasSubscription, setHasSubscription] = useState(false);
 
   useEffect(() => {
-    if (!user) return setRole(null);
-
-    if (role === "admin") {
-      fetch("https://traindesk-backend.onrender.com/api/subscription/status", {
-        headers: { Authorization: `Bearer ${await user.getIdToken()}` }
-      })
-        .then(res => res.json())
-        .then(data => setHasSubscription(data.active));
+    if (!user) {
+      setRole(null);
+      setHasSubscription(false);
+      return;
     }
 
+    // -------------------------
+    // Get Role
+    // -------------------------
     async function getRole() {
       const ref = doc(db, "users", user.uid);
       const snap = await getDoc(ref);
-      setRole(snap.exists() ? snap.data().role : null);
+      const userRole = snap.exists() ? snap.data().role : null;
+      setRole(userRole);
+
+      // -------------------------
+      // If ADMIN → fetch subscription
+      // -------------------------
+      if (userRole === "admin") {
+        await fetchSubscription();
+      }
+    }
+
+    // -------------------------
+    // Fetch Subscription
+    // -------------------------
+    async function fetchSubscription() {
+      try {
+        const token = await user.getIdToken();
+
+        const res = await fetch(
+          "https://traindesk-backend.onrender.com/api/subscription/status",
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+
+        const data = await res.json();
+        setHasSubscription(data.active);
+      } catch (err) {
+        console.error("Subscription fetch failed:", err);
+        setHasSubscription(false);
+      }
     }
 
     getRole();
