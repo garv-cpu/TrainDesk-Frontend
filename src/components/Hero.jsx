@@ -6,6 +6,7 @@ import { usePricing } from "../utils/PricingContext";
 const Hero = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { openPricing } = usePricing();
+  const handleAction = usePricingOrLogin();
 
   return (
     <div className="font-poppins text-slate-800 bg-white">
@@ -53,7 +54,7 @@ const Hero = () => {
               <a className="hover:text-blue-600" href="#pricing">Pricing</a>
               <a className="hover:text-blue-600" href="#dashboard">Dashboard</a>
 
-              <Link to='/login' className="mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              <Link onClick={handleAction} className="mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                 Login
               </Link>
             </div>
@@ -80,14 +81,10 @@ const Hero = () => {
           {/* Action Buttons */}
           <div className="mt-8 flex gap-4">
             <button
-              onClick={openPricing}
+              onClick={handleAction}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow"
             >
               Start Free Trial
-            </button>
-
-            <button className="px-6 py-3 border border-slate-300 rounded-lg hover:bg-slate-100">
-              Watch Demo
             </button>
           </div>
 
