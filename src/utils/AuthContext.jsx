@@ -17,26 +17,53 @@ export const AuthProvider = ({ children }) => {
       return;
     }
 
-    // -------------------------
-    // Get Role
-    // -------------------------
-    async function getRole() {
-      const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref);
-      const userRole = snap.exists() ? snap.data().role : null;
-      setRole(userRole);
+    async function detectRole() {
+      try {
+        // -------------------------
+        // 1️⃣ Check if ADMIN (Firestore)
+        // -------------------------
+        const ref = doc(db, "users", user.uid);
+        const snap = await getDoc(ref);
+
+        if (snap.exists() && snap.data().role === "admin") {
+          setRole("admin");
+          await fetchSubscription();
+          return;
+        }
+      } catch (err) {
+        console.error("Admin check failed:", err);
+      }
+
+      try {
+        // -------------------------
+        // 2️⃣ Check if EMPLOYEE (Backend)
+        // -------------------------
+        const token = await user.getIdToken();
+
+        const res = await fetch(
+          "https://traindesk-backend.onrender.com/api/employees/me",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data._id) {
+            setRole("employee");
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Employee check failed:", err);
+      }
 
       // -------------------------
-      // If ADMIN → fetch subscription
+      // 3️⃣ If neither → Not allowed user
       // -------------------------
-      if (userRole === "admin") {
-        await fetchSubscription();
-      }
+      setRole("none");
     }
 
-    // -------------------------
-    // Fetch Subscription
-    // -------------------------
     async function fetchSubscription() {
       try {
         const token = await user.getIdToken();
@@ -44,7 +71,7 @@ export const AuthProvider = ({ children }) => {
         const res = await fetch(
           "https://traindesk-backend.onrender.com/api/subscription/status",
           {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
           }
         );
 
@@ -56,7 +83,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    getRole();
+    detectRole();
   }, [user]);
 
   return (
