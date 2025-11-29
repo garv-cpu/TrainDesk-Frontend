@@ -26,7 +26,7 @@ const Hero = () => {
           <div className="hidden md:flex items-center gap-8 text-sm">
             <a className="hover:text-blue-600" href="#features">Features</a>
             <a onClick={openPricing} className="hover:text-blue-600" href="#pricing">Pricing</a>
-            <Link onClick={handleAction} to='/login' className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            <Link onClick={handleAction} className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
               Login
             </Link>
           </div>
