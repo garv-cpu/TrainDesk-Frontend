@@ -22,12 +22,12 @@ import EditSOP from "./pages/EditSOP";
 import ViewSOP from "./pages/ViewSOP";
 
 // Employee Frontend Pages
-import EmployeeLogin from "./pages/Employee/EmployeeLogin.jsx";
-import EmployeeDashboard from "./pages/Employee/EmployeeDashboard";
-import EmployeeTraining from "./pages/Employee/EmployeeTraining";
-import EmployeeSOP from "./pages/Employee/EmployeeSOP";
-import EmployeeQuiz from "./pages/Employee/EmployeeQuiz";
-import EmployeeComplete from "./pages/Employee/EmployeeComplete";
+import EmployeeLogin from "./pages/TempEmployee/EmployeeLogin"
+import EmployeeDashboard from "./pages/TempEmployee/EmployeeDashboard";
+import EmployeeTraining from "./pages/TempEmployee/EmployeeTraining";
+import EmployeeSOP from "./pages/TempEmployee/EmployeeSOP";
+import EmployeeQuiz from "./pages/TempEmployee/EmployeeQuiz";
+import EmployeeComplete from "./pages/TempEmployee/EmployeeComplete";
 
 // Routes
 import PrivateRoute from './routes/PrivateRoute';
