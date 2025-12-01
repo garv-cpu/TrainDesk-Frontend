@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Menu, X, CheckCircle } from "lucide-react";
-import { Link } from "react-router-dom";
 import { usePricing } from "../utils/PricingContext";
 import usePricingOrLogin from "../hooks/usePricingOrLogin";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { openPricing } = usePricing();
   const handleAction = usePricingOrLogin();
+  const navigate = useNavigate();
 
   return (
     <div className="font-poppins text-slate-800 bg-white">
@@ -17,7 +18,7 @@ const Hero = () => {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
           {/* Logo */}
-          <div className="flex items-center gap-2">
+          <div onClick={() => navigate("/")} className="flex items-center gap-2 cursor-pointer">
             <img src="/traindesk_logo.png" className="w-10 h-10 mt-2" alt="TrainDesk" />
             <h1 className="text-2xl font-semibold text-blue-600">TrainDesk</h1>
           </div>
@@ -25,10 +26,12 @@ const Hero = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8 text-sm">
             <a className="hover:text-blue-600" href="#features">Features</a>
-            <a onClick={openPricing} className="hover:text-blue-600" href="#pricing">Pricing</a>
-            <Link onClick={handleAction} className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            <a onClick={openPricing} className="hover:text-blue-600">Pricing</a>
+            {/* onClick={handleAction} change it to this one */}
+            <button onClick={() => navigate("/login")} className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
               Login
-            </Link>
+            </button>
+
           </div>
 
           {/* Mobile Button */}
@@ -54,9 +57,16 @@ const Hero = () => {
               <a className="hover:text-blue-600" href="#pricing">Pricing</a>
               <a className="hover:text-blue-600" href="#dashboard">Dashboard</a>
 
-              <Link onClick={handleAction} className="mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              <button
+                onClick={() => {
+                  setMobileOpen(false);
+                  handleAction();
+                }}
+                className="mt-4 px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
                 Login
-              </Link>
+              </button>
+
             </div>
           </div>
         )}
@@ -84,7 +94,7 @@ const Hero = () => {
               onClick={handleAction}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow"
             >
-              Start Free Trial
+              Get Lifetime Access
             </button>
           </div>
 
@@ -184,55 +194,66 @@ const Hero = () => {
       </section> */}
 
       {/* ---------------- PRICING SECTION ---------------- */}
-      <section id="pricing" className="bg-slate-50 py-20 border-t border-slate-200">
-        <div className="max-w-7xl mx-auto px-6 text-center">
+      <section id="pricing" className="bg-slate-50 py-24 border-t border-slate-200">
+        <div className="max-w-7xl mx-auto px-6">
 
-          <h2 className="text-3xl md:text-4xl font-bold">Simple Pricing</h2>
-          <p className="text-slate-600 mt-3">
-            Pricing designed for Indian small and medium businesses.
+          <h2 className="text-4xl font-bold tracking-tight text-center text-slate-800">
+            Simple, One-Time Pricing
+          </h2>
+          <p className="mt-3 text-slate-600 text-center">
+            Lifetime access. All features. One small fee.
           </p>
 
-          <div className="grid md:grid-cols-3 gap-8 mt-16">
+          {/* FULL WIDTH CARD */}
+          <div className="mt-16 bg-white border border-slate-200 rounded-2xl shadow-sm p-10 w-full">
 
-            {[
-              {
-                plan: "Starter",
-                price: "₹149 / month",
-                features: ["Up to 10 employees", "SOP Manager", "Basic Training Paths"]
-              },
-              {
-                plan: "Professional",
-                price: "₹399 / month",
-                features: ["Up to 50 employees", "Role Permissions", "Progress Tracking", "Knowledge Base"]
-              },
-              {
-                plan: "Enterprise",
-                price: "₹1999 / month",
-                features: ["Unlimited employees", "Multi-Branch", "Advanced Analytics", "Priority Support"]
-              }
-            ].map((p, i) => (
-              <div key={i} className="bg-white rounded-xl p-8 shadow hover:shadow-xl transition">
-                <h3 className="text-xl font-semibold text-blue-600">{p.plan}</h3>
-                <p className="text-3xl font-bold mt-3">{p.price}</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center">
 
-                <ul className="mt-6 space-y-2">
-                  {p.features.map((f, idx) => (
-                    <li key={idx} className="flex items-center gap-2 justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span className="text-slate-700 text-sm">{f}</span>
-                    </li>
-                  ))}
-                </ul>
+              {/* Left: Plan Title + Price */}
+              <div className="text-center md:text-left">
+                <h3 className="text-2xl font-semibold text-blue-600">
+                  One-Time Lifetime Access
+                </h3>
+                <p className="mt-3 text-5xl font-bold text-slate-800">
+                  ₹1,999
+                </p>
+                <p className="text-sm text-slate-500">(one time fee, GST included)</p>
+              </div>
 
-                <button className="mt-6 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                  Choose Plan
+              {/* Middle: Features */}
+              <ul className="space-y-3 text-left mx-auto w-fit">
+                {[
+                  "Unlimited Employees",
+                  "Lifetime Access",
+                  "All Features Included",
+                  "Priority Support"
+                ].map((f, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-slate-700 text-sm">{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Right: Button */}
+              <div className="flex justify-center md:justify-end">
+                <button
+                  onClick={() =>
+                  (window.location.href =
+                    "https://payments.cashfree.com/links?code=X9i9fblgs450_AAAAAAAPFIU")
+                  }
+                  className="w-full md:w-auto px-8 py-4 bg-blue-600 text-white rounded-lg text-lg font-medium hover:bg-blue-700 transition"
+                >
+                  Get Lifetime Access
                 </button>
               </div>
-            ))}
 
+            </div>
           </div>
         </div>
       </section>
+
+
     </div>
   );
 };

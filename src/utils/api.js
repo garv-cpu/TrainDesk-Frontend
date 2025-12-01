@@ -2,9 +2,8 @@
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
-const API_BASE = "https://traindesk-backend.onrender.com";
+const API_BASE = "https://traindesk-backend.onrender.com"; 
 
-// wait until firebase auth has a user (useful at app start)
 function waitForUser() {
   return new Promise((resolve) => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -17,15 +16,11 @@ function waitForUser() {
 export async function authFetch(path, opts = {}) {
   let user = auth.currentUser;
 
-  if (!user) {
-    user = await waitForUser();
-  }
+  // Wait for Firebase user if not loaded yet
+  if (!user) user = await waitForUser();
+  if (!user) throw new Error("Not authenticated");
 
-  if (!user) {
-    throw new Error("Not authenticated");
-  }
-
-  // Force refresh token (to reduce "expired token" problems)
+  // Always get a fresh token
   const token = await user.getIdToken(true);
 
   const headers = {
@@ -37,12 +32,13 @@ export async function authFetch(path, opts = {}) {
   const res = await fetch(API_BASE + path, { ...opts, headers });
 
   if (!res.ok) {
-    let msg = `HTTP ${res.status}`;
+    let errorMsg = `HTTP ${res.status}`;
     try {
-      const j = await res.json();
-      if (j?.message) msg = j.message;
+      const json = await res.json();
+      if (json?.message) errorMsg = json.message;
     } catch {}
-    const err = new Error(msg);
+
+    const err = new Error(errorMsg);
     err.status = res.status;
     throw err;
   }

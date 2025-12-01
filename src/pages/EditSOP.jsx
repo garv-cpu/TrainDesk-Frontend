@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import { authFetch } from "../utils/api";
 
 export default function EditSOP() {
@@ -10,39 +11,40 @@ export default function EditSOP() {
   const [dept, setDept] = useState("");
   const [content, setContent] = useState("");
 
+  // Load SOP
   useEffect(() => {
-    authFetch(`/api/sops/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
+    (async () => {
+      try {
+        const data = await authFetch(`/api/sops/${id}`);
         setTitle(data.title);
         setDept(data.dept);
         setContent(data.content);
-      });
+      } catch (err) {
+        toast.error(err.message || "Failed to load SOP");
+      }
+    })();
   }, [id]);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const loading = toast.loading("Updating SOP...");
 
-  try {
-    const res = await authFetch(`/api/sops/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, dept, content }),
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const loading = toast.loading("Updating SOP...");
 
-    if (!res.ok) throw new Error("Error updating SOP");
+    try {
+      await authFetch(`/api/sops/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ title, dept, content }),
+      });
 
-    toast.success("SOP Updated Successfully");
-    navigate("sops");
+      toast.success("SOP Updated Successfully");
+      navigate("/dashboard/sops");
 
-  } catch (err) {
-    toast.error("Failed to update SOP");
-  } finally {
-    toast.dismiss(loading);
-  }
-};
-
+    } catch (err) {
+      toast.error(err.message || "Failed updating SOP");
+    } finally {
+      toast.dismiss(loading);
+    }
+  };
 
   return (
     <div className="p-6 md:p-10">

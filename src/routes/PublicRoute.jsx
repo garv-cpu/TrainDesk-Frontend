@@ -5,6 +5,7 @@ import { useAuth } from "../utils/AuthContext";
 export default function PublicRoute({ children }) {
   const { user, role, loadingAuth } = useAuth();
 
+  // waiting for role detection
   if (loadingAuth || role === "loading") return <PageSkeleton />;
 
   if (user && role === "admin") return <Navigate to="/dashboard" replace />;

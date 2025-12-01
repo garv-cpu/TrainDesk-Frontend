@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./../utils/firebase";
 import { authFetch } from "../utils/api";
 
 export default function CreateEmployee() {
@@ -14,44 +12,36 @@ export default function CreateEmployee() {
     dept: "",
     role: "staff",
     status: "active",
-    password: "",   // required for Firebase account creation
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const loading = toast.loading("Creating employee...");
+
+    const loader = toast.loading("Creating employee...");
 
     try {
-      // 1️⃣ Create Firebase Auth user
-      const userCred = await createUserWithEmailAndPassword(
-        auth,
-        form.email,
-        form.password
-      );
-
-      const firebaseUid = userCred.user.uid;
-
-      // 2️⃣ Add employee to backend
-      await authFetch("/api/employees", {
+      const res = await authFetch("/api/employees", {
         method: "POST",
-        body: JSON.stringify({
-          ...form,
-          firebaseUid,
-        }),
+        body: JSON.stringify(form),
       });
 
-      toast.success("Employee Added Successfully");
-      navigate("/dashboard/employees");
+      toast.success("Employee created!");
 
+      if (res.tempPassword) {
+        toast(`Temporary Password: ${res.tempPassword}`, {
+          icon: "🔐",
+        });
+      }
+
+     navigate("/dashboard/employees");
     } catch (err) {
       console.error(err);
-      toast.error(err.message || "Error creating employee");
+      toast.error(err.message || "Failed to create employee");
     } finally {
-      toast.dismiss(loading);
+      toast.dismiss(loader);
     }
   };
 
@@ -75,16 +65,6 @@ export default function CreateEmployee() {
           placeholder="Email"
           className="w-full border px-4 py-2 rounded-md"
           value={form.email}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          name="password"
-          type="password"
-          placeholder="Temporary Password"
-          className="w-full border px-4 py-2 rounded-md"
-          value={form.password}
           onChange={handleChange}
           required
         />

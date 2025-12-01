@@ -17,21 +17,22 @@ export default function CreateSOP() {
     try {
       const res = await authFetch("/api/sops", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title, dept, content }),
       });
 
-      if (!res.ok) throw new Error("Failed to create SOP");
+      if (!res?.sop?._id) throw new Error("Failed to create SOP");
 
       toast.success("SOP Created Successfully");
       navigate("/dashboard/sops");
 
     } catch (err) {
-      toast.error("Error creating SOP");
+      console.error(err);
+      toast.error(err.message || "Error creating SOP");
     } finally {
       toast.dismiss(loading);
     }
   };
+
 
 
   return (

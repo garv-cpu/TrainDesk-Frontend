@@ -42,10 +42,14 @@ import EditEmployee from "./pages/EditEmployee";
 import PricingModal from "./components/PricingModal";
 import { useContext } from "react";
 import { PricingContext } from "./utils/PricingContext";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import EmployeeSOPListPage from "./pages/Employee/EmployeeSOPListPage";
+import TrainingPlayer from "./pages/TrainingPlayer";
+
 
 export default function App() {
   const { isPricingOpen, closePricing } = useContext(PricingContext);
-
+  ;
   return (
     <>
       <Toaster position="top-center" />
@@ -56,6 +60,7 @@ export default function App() {
         {/* PUBLIC */}
         <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
 
         {/* EMPLOYEE LOGIN */}
         <Route path="/employee/login" element={<EmployeeLogin />} />
@@ -78,6 +83,7 @@ export default function App() {
           </Route>
 
           <Route path="training" element={<Training />} />
+          <Route path="training/:id" element={<TrainingPlayer />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
           <Route path="roles" element={<Roles />} />
@@ -94,20 +100,38 @@ export default function App() {
         </Route>
 
         {/* EMPLOYEE DASHBOARD */}
-        <Route
-          path="/employee"
+        <Route path="/dashboard"
           element={
-            <EmployeePrivateRoute>
-              <EmployeeLayout />
-            </EmployeePrivateRoute>
+            <PrivateRoute>
+              <DashboardLayout />
+            </PrivateRoute>
           }
         >
-          <Route index element={<EmployeeDashboard />} />
-          <Route path="training" element={<EmployeeTraining />} />
-          <Route path="sop/:id" element={<EmployeeSOP />} />
-          <Route path="quiz/:trainingId" element={<EmployeeQuiz />} />
-          <Route path="complete/:trainingId" element={<EmployeeComplete />} />
+          <Route index element={<Dashboard />} />
+
+          <Route path="employees">
+            <Route index element={<Employees />} />
+            <Route path="create" element={<CreateEmployee />} />
+            <Route path="edit/:id" element={<EditEmployee />} />
+          </Route>
+
+          <Route path="training" element={<Training />} />
+          <Route path="training/:id" element={<TrainingPlayer />} />   {/* FIXED */}
+
+          <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="roles" element={<Roles />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="training-progress" element={<EmployeeTrainingProgress />} />
+
+          <Route path="sops">
+            <Route index element={<SOPList />} />
+            <Route path="create" element={<CreateSOP />} />
+            <Route path="edit/:id" element={<EditSOP />} />
+            <Route path="view/:id" element={<ViewSOP />} />
+          </Route>
         </Route>
+
 
       </Routes>
     </>

@@ -15,7 +15,6 @@ export default function EditEmployee() {
         status: "",
     });
 
-    // Load employee (AUTH REQUIRED)
     const fetchEmployee = async () => {
         try {
             const data = await authFetch(`/api/employees/${id}`);
@@ -40,6 +39,7 @@ export default function EditEmployee() {
         try {
             await authFetch(`/api/employees/${id}`, {
                 method: "PUT",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
             });
 
@@ -105,7 +105,6 @@ export default function EditEmployee() {
                 >
                     Save Changes
                 </button>
-
             </form>
         </div>
     );

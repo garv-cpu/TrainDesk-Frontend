@@ -1,90 +1,91 @@
+// src/utils/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "./firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { auth } from "./firebase";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, loadingAuth] = useAuthState(auth);
-  const [role, setRole] = useState("loading");
+  const [role, setRole] = useState("loading"); // "admin" | "employee" | null
   const [hasSubscription, setHasSubscription] = useState(false);
 
+  // helper: call backend with token
+  async function fetchBackend(path, opts = {}) {
+    const token = await auth.currentUser?.getIdToken();
+    if (!token) throw new Error("Not authenticated");
+    const res = await fetch(`https://traindesk-backend.onrender.com${path}`, {
+      ...opts,
+      headers: {
+        ...(opts.headers || {}),
+        Authorization: `Bearer ${token}`,
+        "Content-Type": opts.body ? "application/json" : undefined,
+      },
+    });
+    return res;
+  }
+
+  async function loadSubscription() {
+    try {
+      const res = await fetchBackend("/api/subscription/status");
+      if (!res.ok) return setHasSubscription(false);
+      const data = await res.json();
+      setHasSubscription(data.active === true);
+    } catch (err) {
+      console.error("Subscription fetch failed:", err);
+      setHasSubscription(false);
+    }
+  }
+
   useEffect(() => {
+    let canceled = false;
+    if (loadingAuth) return;
+
     if (!user) {
       setRole(null);
       setHasSubscription(false);
       return;
     }
 
-    async function detectRole() {
+    async function detect() {
       try {
-        // -------------------------
-        // 1️⃣ Check if ADMIN (Firestore)
-        // -------------------------
-        const ref = doc(db, "users", user.uid);
-        const snap = await getDoc(ref);
-
-        if (snap.exists() && snap.data().role === "admin") {
-          setRole("admin");
-          await fetchSubscription();
-          return;
-        }
-      } catch (err) {
-        console.error("Admin check failed:", err);
-      }
-
-      try {
-        // -------------------------
-        // 2️⃣ Check if EMPLOYEE (Backend)
-        // -------------------------
-        const token = await user.getIdToken();
-
-        const res = await fetch(
-          "https://traindesk-backend.onrender.com/api/employees/me",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data._id) {
-            setRole("employee");
+        // 1) check /api/users/me
+        const adminRes = await fetchBackend("/api/users/me");
+        if (adminRes.ok) {
+          const adminData = await adminRes.json();
+          if (adminData.role === "admin") {
+            if (!canceled) {
+              setRole("admin");
+              await loadSubscription();
+            }
             return;
           }
         }
-      } catch (err) {
-        console.error("Employee check failed:", err);
-      }
 
-      // -------------------------
-      // 3️⃣ If neither → Not allowed user
-      // -------------------------
-      setRole("none");
-    }
-
-    async function fetchSubscription() {
-      try {
-        const token = await user.getIdToken();
-
-        const res = await fetch(
-          "https://traindesk-backend.onrender.com/api/subscription/status",
-          {
-            headers: { Authorization: `Bearer ${token}` },
+        // 2) check employee
+        const empRes = await fetchBackend("/api/employees/me");
+        if (empRes.ok) {
+          const empData = await empRes.json();
+          if (empData && empData._id) {
+            if (!canceled) setRole("employee");
+            return;
           }
-        );
+        }
 
-        const data = await res.json();
-        setHasSubscription(data.active);
+        // default -> not allowed / public user
+        if (!canceled) setRole(null);
       } catch (err) {
-        console.error("Subscription fetch failed:", err);
-        setHasSubscription(false);
+        console.error("Role detection error:", err);
+        if (!canceled) setRole(null);
       }
     }
 
-    detectRole();
-  }, [user]);
+    detect();
+
+    return () => {
+      canceled = true;
+    };
+  }, [user, loadingAuth]);
 
   return (
     <AuthContext.Provider value={{ user, role, hasSubscription, loadingAuth }}>

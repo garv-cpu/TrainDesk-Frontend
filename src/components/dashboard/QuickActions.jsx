@@ -7,7 +7,7 @@ export default function QuickActions() {
     };
 
     const handleAssignTraining = () => {
-        alert("Assign training clicked — choose employee soon!");
+        navigate("training");
     };
 
     return (

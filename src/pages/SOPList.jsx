@@ -16,11 +16,12 @@ export default function SOPList() {
     const loadSOPs = async () => {
         try {
             const data = await authFetch("/api/sops");
-            setSOPs(data);
+            setSOPs(Array.isArray(data) ? data : []);
         } catch (err) {
             toast.error(err.message || "Failed to load SOPs");
         }
     };
+
 
     useEffect(() => {
         loadSOPs();
@@ -140,7 +141,7 @@ export default function SOPList() {
                                 <td className="py-4 px-4 text-gray-600">{item.dept}</td>
 
                                 <td className="py-4 px-4 text-gray-600">
-                                    {new Date(item.updated).toLocaleDateString()}
+                                    {item.updated ? new Date(item.updated).toLocaleDateString() : "—"}
                                 </td>
 
                                 <td className="py-4 px-4">
