@@ -35,7 +35,7 @@ export default function TrainingPlayer() {
             </h1>
 
             {/* Video Player */}
-            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-lg max-w-3xl mx-auto">
+            <div className="mt-5 bg-white rounded-2xl shadow-lg overflow-hidden border border-blue-100">
                 <video
                     src={video.videoUrl}
                     controls

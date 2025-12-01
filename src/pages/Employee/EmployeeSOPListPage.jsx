@@ -52,7 +52,7 @@ export default function EmployeeSOPListPage() {
         {sops.map((sop) => (
           <Link
             key={sop._id}
-            to={`/employee/sop/${sop._id}`}
+            to={`${sop._id}`}
             className="bg-white p-6 rounded-xl shadow-sm border border-blue-100 hover:bg-blue-50 transition"
           >
             <div className="flex items-center gap-4">

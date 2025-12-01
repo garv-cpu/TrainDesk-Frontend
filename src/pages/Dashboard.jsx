@@ -4,6 +4,7 @@ import StatsCards from '../components/dashboard/StatsCard';
 import ActivityFeed from '../components/dashboard/ActivityFeed';
 import RecentSOPs from '../components/dashboard/RecentSOPs';
 import SkeletonLoader from '../components/SkeletonLoader';
+import TrainingBreakdown from '../components/dashboard/TrainingBreakdown';
 
 const Dashboard = () => {
 
@@ -58,6 +59,7 @@ const Dashboard = () => {
 
                 <div className="lg:col-span-2 space-y-6">
                     <ActivityFeed />
+                    {/* <TrainingBreakdown /> */}
                 </div>
 
                 <div className="space-y-6">
