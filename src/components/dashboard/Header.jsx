@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { Menu, Search } from "lucide-react";
@@ -13,9 +13,24 @@ export default function Header({ openSidebar }) {
     const [results, setResults] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
 
+    // profile dropdown
+    const [profileDropdown, setProfileDropdown] = useState(false);
+    const profileRef = useRef(null);
+
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (u) => setUser(u));
         return () => unsub();
+    }, []);
+
+    // close profile dropdown when clicking outside
+    useEffect(() => {
+        const handler = (e) => {
+            if (profileRef.current && !profileRef.current.contains(e.target)) {
+                setProfileDropdown(false);
+            }
+        };
+        document.addEventListener("click", handler);
+        return () => document.removeEventListener("click", handler);
     }, []);
 
     // 🔍 GLOBAL SEARCH
@@ -29,12 +44,10 @@ export default function Header({ openSidebar }) {
         const delay = setTimeout(async () => {
             try {
                 const data = await authFetch(`/api/search?q=${encodeURIComponent(query)}`);
-
                 const combined = [
                     ...data.sop.map((s) => ({ type: "sop", ...s })),
                     ...data.training.map((t) => ({ type: "training", ...t }))
                 ];
-
                 setResults(combined);
                 setShowDropdown(true);
             } catch (e) {
@@ -59,7 +72,6 @@ export default function Header({ openSidebar }) {
             const beforeAt = user.email.split("@")[0];
             return beforeAt.charAt(0).toUpperCase() + beforeAt.slice(1);
         }
-
         return "User";
     };
 
@@ -96,7 +108,7 @@ export default function Header({ openSidebar }) {
                         onFocus={() => results.length > 0 && setShowDropdown(true)}
                     />
 
-                    {/* DROPDOWN RESULTS */}
+                    {/* SEARCH RESULTS */}
                     {showDropdown && results.length > 0 && (
                         <div className="absolute top-11 w-64 bg-white shadow-lg rounded-md border z-30 max-h-80 overflow-auto">
                             {results.map((item) => (
@@ -115,23 +127,41 @@ export default function Header({ openSidebar }) {
                     )}
                 </div>
 
-                {/* AVATAR */}
-                {user?.photoURL ? (
-                    <img
-                        src={`${user.photoURL}?sz=200`}
-                        alt="Profile"
-                        className="w-10 h-10 rounded-full object-cover border shadow-sm"
-                        referrerPolicy="no-referrer"
-                    />
-                ) : (
-                    <div className="px-4 py-2 bg-blue-600 text-white rounded-full font-medium whitespace-nowrap">
-                        {getFallbackName()}
-                    </div>
-                )}
+                {/* PROFILE (MOBILE DROPDOWN) */}
+                <div
+                    className="relative sm:hidden cursor-pointer"
+                    onClick={() => setProfileDropdown(!profileDropdown)}
+                    ref={profileRef}
+                >
+                    {user?.photoURL ? (
+                        <img
+                            src={`${user.photoURL}?sz=200`}
+                            alt="Profile"
+                            className="w-10 h-10 rounded-full object-cover border shadow-sm"
+                            referrerPolicy="no-referrer"
+                        />
+                    ) : (
+                        <div className="px-4 py-2 bg-blue-600 text-white rounded-full font-medium whitespace-nowrap">
+                            {getFallbackName()}
+                        </div>
+                    )}
 
+                    {profileDropdown && (
+                        <div className="absolute right-0 mt-2 w-32 bg-white shadow-md border rounded-md z-40">
+                            <button
+                                onClick={handleLogout}
+                                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {/* DESKTOP LOGOUT BUTTON */}
                 <button
                     onClick={handleLogout}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-600 transition hidden sm:block"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition hidden sm:block"
                 >
                     Logout
                 </button>
