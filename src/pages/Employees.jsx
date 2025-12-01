@@ -12,11 +12,12 @@ export default function Employees() {
     const fetchEmployees = async () => {
         try {
             const data = await authFetch(`/api/employees`);
-            setEmployees(data);
+            setEmployees(data.employees || []); // FIXED
         } catch (err) {
             toast.error(err.message || "Failed to load employees");
         }
     };
+
 
     useEffect(() => {
         fetchEmployees();
@@ -114,11 +115,10 @@ export default function Employees() {
                                 <td className="p-3 capitalize">{emp.role}</td>
                                 <td className="p-3">
                                     <span
-                                        className={`px-3 py-1 rounded-full text-sm ${
-                                            emp.status === "active"
+                                        className={`px-3 py-1 rounded-full text-sm ${emp.status === "active"
                                                 ? "bg-green-100 text-green-600"
                                                 : "bg-red-100 text-red-600"
-                                        }`}
+                                            }`}
                                     >
                                         {emp.status}
                                     </span>

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import StatsCards from '../components/dashboard/StatsCard';
 import ActivityFeed from '../components/dashboard/ActivityFeed';
-import QuickActions from '../components/dashboard/QuickActions';
 import RecentSOPs from '../components/dashboard/RecentSOPs';
 import SkeletonLoader from '../components/SkeletonLoader';
 
@@ -62,7 +61,6 @@ const Dashboard = () => {
                 </div>
 
                 <div className="space-y-6">
-                    <QuickActions />
                     <RecentSOPs />
                 </div>
 

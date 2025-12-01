@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { authFetch } from "../../utils/api"; // IMPORTANT
+import { authFetch } from "../../utils/api";
 
 export default function StatsCards() {
   const [stats, setStats] = useState(null);
@@ -9,10 +9,12 @@ export default function StatsCards() {
     const load = async () => {
       try {
         const data = await authFetch("/api/stats");
+
         setStats({
           employees: data.employees ?? 0,
           activeTrainings: data.activeTrainings ?? 0,
           completedTrainings: data.completedTrainings ?? 0,
+          completedSOPs: data.completedSOPs ?? 0,
           pendingSOPs: data.pendingSOPs ?? 0,
         });
       } catch (err) {
@@ -26,8 +28,8 @@ export default function StatsCards() {
   }, []);
 
   const skeleton = (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-      {[1, 2, 3, 4].map((i) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-6">
+      {[1, 2, 3, 4, 5].map((i) => (
         <div key={i} className="p-6 bg-white rounded-xl shadow border">
           <div className="h-4 w-32 bg-gray-200 rounded animate-pulse"></div>
           <div className="h-8 w-20 bg-gray-300 rounded mt-3 animate-pulse"></div>
@@ -42,17 +44,16 @@ export default function StatsCards() {
     { title: "Total Employees", value: stats.employees },
     { title: "Active Trainings", value: stats.activeTrainings },
     { title: "Completed Trainings", value: stats.completedTrainings },
+    { title: "Completed SOPs", value: stats.completedSOPs },
     { title: "Pending SOPs", value: stats.pendingSOPs },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mt-6">
       {cards.map((s) => (
         <div key={s.title} className="p-6 bg-white rounded-xl shadow border">
           <h3 className="text-gray-500">{s.title}</h3>
-          <p className="text-3xl font-bold text-blue-600 mt-2">
-            {s.value}
-          </p>
+          <p className="text-3xl font-bold text-blue-600 mt-2">{s.value}</p>
         </div>
       ))}
     </div>

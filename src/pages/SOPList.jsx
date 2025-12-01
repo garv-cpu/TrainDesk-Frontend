@@ -16,12 +16,13 @@ export default function SOPList() {
     const loadSOPs = async () => {
         try {
             const data = await authFetch("/api/sops");
+
+            // Ensure backend gives array
             setSOPs(Array.isArray(data) ? data : []);
         } catch (err) {
             toast.error(err.message || "Failed to load SOPs");
         }
     };
-
 
     useEffect(() => {
         loadSOPs();
@@ -110,6 +111,10 @@ export default function SOPList() {
                         <tr className="text-sm text-gray-600">
                             <th className="py-3 px-4 font-medium">Title</th>
                             <th className="py-3 px-4 font-medium">Department</th>
+
+                            {/* NEW COLUMN */}
+                            <th className="py-3 px-4 font-medium">Assigned To</th>
+
                             <th className="py-3 px-4 font-medium">Last Updated</th>
                             <th className="py-3 px-4 font-medium text-right">Actions</th>
                         </tr>
@@ -118,7 +123,7 @@ export default function SOPList() {
                     <tbody>
                         {filtered.length === 0 && (
                             <tr>
-                                <td colSpan="4" className="text-center py-10 text-gray-500">
+                                <td colSpan="5" className="text-center py-10 text-gray-500">
                                     No SOPs here.
                                 </td>
                             </tr>
@@ -129,6 +134,7 @@ export default function SOPList() {
                                 key={item._id}
                                 className="border-t border-gray-100 hover:bg-gray-50 transition"
                             >
+                                {/* Title */}
                                 <td
                                     className="py-4 px-4 text-gray-800 flex items-center gap-2 cursor-pointer"
                                     onClick={() => navigate(`view/${item._id}`)}
@@ -137,16 +143,26 @@ export default function SOPList() {
                                     <span className="hover:underline">{item.title}</span>
                                 </td>
 
-
+                                {/* Department */}
                                 <td className="py-4 px-4 text-gray-600">{item.dept}</td>
 
+                                {/* ASSIGNED EMPLOYEES */}
                                 <td className="py-4 px-4 text-gray-600">
-                                    {item.updated ? new Date(item.updated).toLocaleDateString() : "—"}
+                                    {Array.isArray(item.assignedTo) && item.assignedTo.length > 0
+                                        ? item.assignedTo.map((emp) => emp.name).join(", ")
+                                        : "—"}
                                 </td>
 
+                                {/* Last Updated */}
+                                <td className="py-4 px-4 text-gray-600">
+                                    {item.updated
+                                        ? new Date(item.updated).toLocaleDateString()
+                                        : "—"}
+                                </td>
+
+                                {/* Actions */}
                                 <td className="py-4 px-4">
                                     <div className="flex items-center gap-4 justify-end">
-
                                         <button
                                             className="text-green-600 hover:opacity-70"
                                             onClick={() => navigate(`view/${item._id}`)}

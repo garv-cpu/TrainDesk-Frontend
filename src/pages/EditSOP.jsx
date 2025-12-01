@@ -11,6 +11,19 @@ export default function EditSOP() {
   const [dept, setDept] = useState("");
   const [content, setContent] = useState("");
 
+  const [employees, setEmployees] = useState([]);
+  const [assignedTo, setAssignedTo] = useState([]);
+
+  // Load Employees
+  const loadEmployees = async () => {
+    try {
+      const res = await authFetch("/api/employees");
+      setEmployees(res?.employees || []);
+    } catch {
+      toast.error("Failed to load employees");
+    }
+  };
+
   // Load SOP
   useEffect(() => {
     (async () => {
@@ -19,12 +32,22 @@ export default function EditSOP() {
         setTitle(data.title);
         setDept(data.dept);
         setContent(data.content);
+        setAssignedTo(data.assignedTo?.map((emp) => emp._id) || []);
       } catch (err) {
-        toast.error(err.message || "Failed to load SOP");
+        toast.error("Failed to load SOP");
       }
     })();
+
+    loadEmployees();
   }, [id]);
 
+  const toggleSelectEmployee = (empId) => {
+    if (assignedTo.includes(empId)) {
+      setAssignedTo(assignedTo.filter((id) => id !== empId));
+    } else {
+      setAssignedTo([...assignedTo, empId]);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,14 +56,18 @@ export default function EditSOP() {
     try {
       await authFetch(`/api/sops/${id}`, {
         method: "PUT",
-        body: JSON.stringify({ title, dept, content }),
+        body: JSON.stringify({
+          title,
+          dept,
+          content,
+          assignedTo, // ✅ FIX
+        }),
       });
 
       toast.success("SOP Updated Successfully");
       navigate("/dashboard/sops");
-
     } catch (err) {
-      toast.error(err.message || "Failed updating SOP");
+      toast.error("Failed updating SOP");
     } finally {
       toast.dismiss(loading);
     }
@@ -79,6 +106,21 @@ export default function EditSOP() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
+
+        {/* EMPLOYEE ASSIGN UI */}
+        <label className="block mb-2 font-medium">Assign Employees</label>
+        <div className="border rounded p-3 max-h-64 overflow-y-auto mb-6">
+          {employees.map((emp) => (
+            <label key={emp._id} className="flex items-center gap-2 py-1">
+              <input
+                type="checkbox"
+                checked={assignedTo.includes(emp._id)}
+                onChange={() => toggleSelectEmployee(emp._id)}
+              />
+              <span>{emp.name}</span>
+            </label>
+          ))}
+        </div>
 
         <button className="bg-blue-600 text-white px-4 py-2 rounded">
           Update SOP

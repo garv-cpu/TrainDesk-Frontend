@@ -65,6 +65,23 @@ export default function App() {
         {/* EMPLOYEE LOGIN */}
         <Route path="/employee/login" element={<EmployeeLogin />} />
 
+        {/* EMPLOYEE AUTH + DASHBOARD */}
+        <Route
+          path="/employee"
+          element={
+            <EmployeePrivateRoute>
+              <EmployeeLayout />
+            </EmployeePrivateRoute>
+          }
+        >
+          <Route index element={<EmployeeDashboard />} />
+          <Route path="training" element={<EmployeeTraining />} />
+          <Route path="training/:id" element={<EmployeeQuiz />} />
+          <Route path="sops" element={<EmployeeSOPListPage />} />
+          <Route path="sop/:id" element={<EmployeeSOP />} />
+          <Route path="complete" element={<EmployeeComplete />} />
+        </Route>
+
         {/* ADMIN DASHBOARD */}
         <Route
           path="/dashboard"

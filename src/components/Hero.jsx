@@ -217,7 +217,7 @@ const Hero = () => {
                 <p className="mt-3 text-5xl font-bold text-slate-800">
                   ₹1,999
                 </p>
-                <p className="text-sm text-slate-500">(one time fee, GST included)</p>
+                <p className="text-sm text-slate-500">(one time fee)</p>
               </div>
 
               {/* Middle: Features */}

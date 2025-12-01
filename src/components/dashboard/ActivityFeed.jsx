@@ -13,29 +13,23 @@ export default function ActivityFeed() {
     let s;
 
     async function connectSocket() {
-      // get fresh token
       const user = auth.currentUser;
       if (!user) return;
 
       const token = await user.getIdToken(true);
 
-      // connect websocket WITH AUTH
       s = io("https://traindesk-backend.onrender.com", {
         transports: ["websocket"],
-        auth: {
-          token,
-        },
+        auth: { token },
       });
 
-      // live events
       s.on("activity", (data) => {
-        setActivities((prev) => [data, ...prev.slice(0, 20)]);
+        setActivities((prev) => [data, ...prev]);
       });
 
       setSocket(s);
     }
 
-    // Load initial logs with authFetch
     authFetch("/api/logs")
       .then((data) => setActivities(data))
       .catch((err) => console.error("LOG FETCH ERR:", err));
@@ -57,7 +51,13 @@ export default function ActivityFeed() {
         <p className="text-gray-500 text-sm">No recent activity.</p>
       )}
 
-      <ul className="space-y-4">
+      {/* -------------------------------------- */}
+      {/* SCROLLABLE LIST AFTER 8 ITEMS */}
+      {/* -------------------------------------- */}
+      <ul
+        className="space-y-4 overflow-y-auto pr-2"
+        style={{ maxHeight: "440px" }} // Enough for ~8 items
+      >
         {activities.map((item, index) => (
           <li
             key={index}

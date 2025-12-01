@@ -15,7 +15,7 @@ export default function RecentSOPs() {
         // Sort newest → oldest & limit to 3
         const latest3 = data.sort(
           (a, b) => new Date(b.updated) - new Date(a.updated)
-        ).slice(0, 3);
+        ).slice(0, 6);
 
         setSops(latest3);
       } catch (err) {

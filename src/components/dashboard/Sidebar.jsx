@@ -20,7 +20,7 @@ export default function Sidebar({ isOpen, closeSidebar }) {
         { label: "Training", icon: <BookOpen size={18} />, path: "/dashboard/training" },
         { label: "SOPs", icon: <FileText size={18} />, path: "/dashboard/sops" },
         { label: "Reports", icon: <BarChart size={18} />, path: "/dashboard/reports" },
-        { label: "Settings", icon: <Settings size={18} />, path: "/dashboard/settings" },
+        // { label: "Settings", icon: <Settings size={18} />, path: "/dashboard/settings" },
     ];
 
     const [active, setActive] = useState("Dashboard");
@@ -46,12 +46,13 @@ export default function Sidebar({ isOpen, closeSidebar }) {
             {/* SIDEBAR */}
             <aside
                 className={`
-                    w-64 bg-white shadow-lg h-screen p-6 z-30
-                    fixed lg:static top-0 left-0
-                    transform transition-transform duration-300
-                    ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-                `}
+        w-64 bg-white shadow-lg min-h-screen p-6 z-30 sticky top-0
+        fixed lg:static left-0
+        transform transition-transform duration-300
+        ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+    `}
             >
+
                 {/* Close button (mobile only) */}
                 <button
                     className="lg:hidden mb-4 text-gray-600"
