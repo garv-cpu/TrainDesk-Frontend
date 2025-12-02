@@ -7,7 +7,7 @@ import {
     BarChart,
 } from "lucide-react";
 
-export default function DemoSidebar({ closeSidebar }) {
+export default function DemoSidebar({ isOpen, closeSidebar }) {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -21,13 +21,19 @@ export default function DemoSidebar({ closeSidebar }) {
 
     return (
         <aside
-            className="
-                w-64 min-h-screen bg-white border-r shadow-sm
-                p-6 select-none hidden lg:block
-            "
+            className={`
+                bg-white border-r shadow-sm p-6 select-none w-64 min-h-screen
+                fixed top-0 left-0 z-50
+                transform transition-transform duration-300
+                ${isOpen ? "translate-x-0" : "-translate-x-full"}
+                lg:translate-x-0 lg:static lg:block
+            `}
         >
             <h1
-                onClick={() => navigate("/demo")}
+                onClick={() => {
+                    navigate("/demo");
+                    closeSidebar();
+                }}
                 className="text-blue-600 text-2xl font-bold mb-10 cursor-pointer"
             >
                 TrainDesk (Demo)
@@ -41,11 +47,15 @@ export default function DemoSidebar({ closeSidebar }) {
                     return (
                         <div
                             key={item.label}
-                            onClick={() => navigate(item.path)}
+                            onClick={() => {
+                                navigate(item.path);
+                                closeSidebar();
+                            }}
                             className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg cursor-pointer transition
-                                ${active
-                                    ? "bg-blue-600 text-white shadow-md"
-                                    : "text-gray-700 hover:bg-blue-50"
+                                ${
+                                    active
+                                        ? "bg-blue-600 text-white shadow-md"
+                                        : "text-gray-700 hover:bg-blue-50"
                                 }
                             `}
                         >
