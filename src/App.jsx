@@ -51,6 +51,7 @@ import DemoTraining from "./pages/demo/DemoTraining";
 import DemoSOPList from "./pages/demo/DemoSOPList";
 import DemoReports from "./pages/demo/DemoReports";
 import DemoLayout from "./pages/demo/DemoLayout";
+import PrivacyPolicy from "./pages/policies/PrivacyPolicy";
 
 
 export default function App() {
@@ -63,6 +64,8 @@ export default function App() {
 
 
       <Routes>
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
         <Route path="/demo" element={<DemoLayout />}>
           <Route index element={<DemoDashboard />} />
           <Route path="employees" element={<DemoEmployees />} />

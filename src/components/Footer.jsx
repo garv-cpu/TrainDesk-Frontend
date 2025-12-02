@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Footer() {
     return (
         <footer className="px-6 md:px-16 lg:px-24 xl:px-32 pt-8 w-full text-gray-500 bg-white">
@@ -6,9 +8,9 @@ export default function Footer() {
                 {/* LOGO + DESCRIPTION */}
                 <div className="md:max-w-96">
                     <div className="flex items-center gap-2 ">
-                        <img 
-                            src="/traindesk_logo.png" 
-                            alt="TrainDesk Logo" 
+                        <img
+                            src="/traindesk_logo.png"
+                            alt="TrainDesk Logo"
                             className="w-12 h-12"
                         />
                         <h1 className="text-xl font-semibold text-blue-700">
@@ -28,8 +30,12 @@ export default function Footer() {
                         <ul className="text-sm space-y-2">
                             <li><a href="#" className="hover:text-blue-600">Home</a></li>
                             <li><a href="#" className="hover:text-blue-600">About us</a></li>
-                            <li><a href="#" className="hover:text-blue-600">Contact us</a></li>
-                            <li><a href="#" className="hover:text-blue-600">Privacy policy</a></li>
+                            <li>
+                                <a href="mailto:hibon.technologies@gmail.com" className="hover:text-blue-600">
+                                    Contact us
+                                </a>
+                            </li>
+                            <li><Link to='/privacy-policy' className="hover:text-blue-600">Privacy policy</Link></li>
                         </ul>
                     </div>
 
@@ -44,7 +50,7 @@ export default function Footer() {
             </div>
 
             <p className="pt-4 text-center text-xs md:text-sm pb-5">
-                Copyright 2025 © 
+                Copyright 2025 ©
                 <span className="text-blue-600"> Hibon Technologies</span>. All Rights Reserved.
             </p>
         </footer>
