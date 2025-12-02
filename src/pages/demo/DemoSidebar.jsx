@@ -44,12 +44,15 @@ export default function DemoSidebar({ closeSidebar }) {
                             onClick={() => navigate(item.path)}
                             className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg cursor-pointer transition
                                 ${active
-                                    ? "bg-blue-100 border-blue-300 text-blue-700"
-                                    : "text-gray-700 hover:bg-blue-50 hover:border-blue-200"
+                                    ? "bg-blue-600 text-white shadow-md"
+                                    : "text-gray-700 hover:bg-blue-50"
                                 }
                             `}
                         >
-                            <Icon size={20} className={active ? "text-blue-700" : ""} />
+                            <Icon
+                                size={20}
+                                className={active ? "text-white" : "text-black"}
+                            />
                             <span className="font-medium">{item.label}</span>
                         </div>
                     );
