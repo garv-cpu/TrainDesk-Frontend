@@ -189,7 +189,7 @@ const Hero = () => {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold">Clean & Simple Dashboard</h2>
           <p className="text-slate-600 mt-3 max-w-xl mx-auto">
-            TrainDesk provides a minimal, intuitive interface your employees will love.
+            TrainDesk provides a minimal, intuitive interface your employees & managers will love.
           </p>
 
           <Slider />

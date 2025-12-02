@@ -24,7 +24,7 @@ const AdminLogin = () => {
       const me = await authFetch("/api/users/me");
       if (me.role === "admin") return navigate("/dashboard");
       if (me.role === "staff") return navigate("/employee"); // fallback
-      toast.error("Invalid role detected.");
+      toast.error("Access denied. Not an admin.");
     } catch (err) {
       toast.error(err.message || "Failed to fetch role");
     }

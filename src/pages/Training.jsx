@@ -13,10 +13,8 @@ export default function Training() {
   const [openModal, setOpenModal] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
-
-  // 🔍 SEARCH & FILTER STATES
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("all");
+  const [employees, setEmployees] = useState([]);
+  const [assignedTo, setAssignedTo] = useState([]);
 
   const [form, setForm] = useState({
     title: "",
@@ -25,7 +23,34 @@ export default function Training() {
     thumbnailFile: null,
   });
 
-  // LOAD VIDEOS
+  const hasThumbnail = (thumb) => {
+    if (!thumb) return false;
+    if (typeof thumb !== "string") return false;
+    const cleaned = thumb.trim();
+    if (!cleaned) return false;
+    if (cleaned === "null" || cleaned === "undefined") return false;
+    if (!cleaned.startsWith("http")) return false;
+    return true;
+  };
+
+  // Load employees
+  const loadEmployees = async () => {
+    try {
+      const data = await authFetch("/api/employees");
+      const list = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.employees)
+        ? data.employees
+        : [];
+
+      setEmployees(list);
+    } catch (err) {
+      console.log("Failed to load employees", err);
+      setEmployees([]);
+    }
+  };
+
+  // Load all videos
   async function loadVideos() {
     try {
       const data = await authFetch("/api/training");
@@ -40,6 +65,7 @@ export default function Training() {
 
   useEffect(() => {
     loadVideos();
+    loadEmployees();
   }, []);
 
   // CLOUDINARY UPLOAD
@@ -74,7 +100,7 @@ export default function Training() {
     }
   };
 
-  // UPLOAD VIDEO
+  // UPLOAD NEW VIDEO
   const uploadVideo = async () => {
     if (!form.title || !form.videoFile)
       return toast.error("Title & Video required");
@@ -98,6 +124,7 @@ export default function Training() {
           description: form.description,
           videoUrl,
           thumbnailUrl,
+          assignedTo,
         }),
       });
 
@@ -134,7 +161,7 @@ export default function Training() {
     }
   };
 
-  // SKELETON
+  // Skeleton
   const skeleton = (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {[1, 2, 3].map((i) => (
@@ -149,22 +176,6 @@ export default function Training() {
       ))}
     </div>
   );
-
-  // 🔍 FILTERED LIST
-  const filteredVideos = videos.filter((v) => {
-    const matchSearch =
-      v.title.toLowerCase().includes(search.toLowerCase()) ||
-      v.description?.toLowerCase().includes(search.toLowerCase());
-
-    const matchFilter =
-      filter === "all"
-        ? true
-        : filter === "withThumbnail"
-        ? v.thumbnailUrl
-        : !v.thumbnailUrl;
-
-    return matchSearch && matchFilter;
-  });
 
   return (
     <div className="text-black">
@@ -181,37 +192,16 @@ export default function Training() {
         </button>
       </div>
 
-      {/* 🔍 Search + Filter Row */}
-      <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
-        <input
-          type="text"
-          placeholder="Search videos..."
-          className="p-2 border rounded-lg w-full md:w-1/2"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-
-        <select
-          className="p-2 border rounded-lg w-full md:w-48"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="all">All Videos</option>
-          <option value="withThumbnail">With Thumbnail</option>
-          <option value="withoutThumbnail">Without Thumbnail</option>
-        </select>
-      </div>
-
-      {/* Skeleton */}
+      {/* VIDEO LIST */}
       {loading ? (
         skeleton
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredVideos.length === 0 && (
-            <p className="text-gray-600">No videos match your search</p>
+          {videos.length === 0 && (
+            <p className="text-gray-600">No videos uploaded yet</p>
           )}
 
-          {filteredVideos.map((v) => (
+          {videos.map((v) => (
             <div
               key={v._id}
               className="bg-white rounded-xl p-3 shadow-md border border-gray-200"
@@ -222,10 +212,10 @@ export default function Training() {
               >
                 <img
                   src={
-                    v.thumbnailUrl ||
-                    "https://dummyimage.com/600x350/1e3a8a/ffffff&text=Training+Video"
+                    hasThumbnail(v.thumbnailUrl)
+                      ? v.thumbnailUrl
+                      : "https://dummyimage.com/600x350/1e3a8a/ffffff&text=Training+Video"
                   }
-                  alt="thumb"
                   className="rounded-lg w-full h-40 object-cover"
                 />
               </div>
@@ -283,13 +273,33 @@ export default function Training() {
             <textarea
               placeholder="Description (optional)"
               value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
               className="w-full p-2 rounded-lg bg-white text-black border border-gray-300 mb-3"
             />
 
-            <label className="block mb-2 font-medium">Video File</label>
+            <label className="block mb-2 font-medium">Assign To Employees</label>
+            <select
+              multiple
+              className="w-full p-2 border rounded-lg bg-white text-black h-32"
+              value={assignedTo}
+              onChange={(e) =>
+                setAssignedTo(
+                  Array.from(e.target.selectedOptions, (opt) => opt.value)
+                )
+              }
+            >
+              {employees.length === 0 && (
+                <option disabled>No employees found</option>
+              )}
+
+              {employees.map((emp) => (
+                <option key={emp._id} value={emp.firebaseUid}>
+                  {emp.name}
+                </option>
+              ))}
+            </select>
+
+            <label className="block mb-2 font-medium mt-4">Video File</label>
             <input
               type="file"
               accept="video/*"

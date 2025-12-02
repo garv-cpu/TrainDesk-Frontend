@@ -14,30 +14,22 @@ const EmployeeDashboard = () => {
   useEffect(() => {
     async function loadDashboard() {
       try {
-        // --------------------------
-        // 1. LOAD ASSIGNED TRAININGS
-        // --------------------------
+        // 1. ASSIGNED TRAINING (already filtered by backend)
         const assignedRes = await authFetch("/api/employee/training");
         setAssigned(assignedRes);
 
-        // --------------------------
-        // 2. LOAD EMPLOYEE PROGRESS
-        // --------------------------
+        // 2. EMPLOYEE PROGRESS
         const progressRes = await authFetch("/api/employee/progress");
         setProgress(progressRes);
 
-        // --------------------------
-        // 3. CALCULATE COUNTS
-        // --------------------------
+        // 3. COUNTS
         const completed = progressRes.filter((p) => p.completed).length;
         const pending = assignedRes.length - completed;
 
         setCompletedCount(completed);
         setPendingCount(pending);
 
-        // --------------------------
         // 4. OVERALL %
-        // --------------------------
         const percent =
           assignedRes.length > 0
             ? Math.round((completed / assignedRes.length) * 100)
@@ -52,7 +44,7 @@ const EmployeeDashboard = () => {
     }
 
     loadDashboard();
-  }, []);
+  }, []); // 🔥 correct dependency so no infinite loop
 
   if (loading) {
     return (
@@ -72,25 +64,33 @@ const EmployeeDashboard = () => {
         </p>
       </div>
 
-      {/* Stats */}
+      {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-100">
-          <h3 className="text-lg font-semibold text-blue-700">Assigned Trainings</h3>
-          <p className="text-3xl font-bold mt-2 text-blue-600">{assigned.length}</p>
+          <h3 className="text-lg font-semibold text-blue-700">
+            Assigned Trainings
+          </h3>
+          <p className="text-3xl font-bold mt-2 text-blue-600">
+            {assigned.length}
+          </p>
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-100">
           <h3 className="text-lg font-semibold text-blue-700">Completed</h3>
-          <p className="text-3xl font-bold mt-2 text-green-600">{completedCount}</p>
+          <p className="text-3xl font-bold mt-2 text-green-600">
+            {completedCount}
+          </p>
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-100">
           <h3 className="text-lg font-semibold text-blue-700">Pending</h3>
-          <p className="text-3xl font-bold mt-2 text-red-500">{pendingCount}</p>
+          <p className="text-3xl font-bold mt-2 text-red-500">
+            {pendingCount}
+          </p>
         </div>
       </div>
 
-      {/* Training Progress */}
+      {/* Overall Progress */}
       <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-100">
         <h2 className="text-xl font-semibold text-blue-700 mb-4">
           Overall Progress
@@ -108,7 +108,7 @@ const EmployeeDashboard = () => {
         </p>
       </div>
 
-      {/* Assigned training list */}
+      {/* Assigned video list */}
       <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-100">
         <h2 className="text-xl font-semibold text-blue-700 mb-4">
           Your Trainings
@@ -129,8 +129,12 @@ const EmployeeDashboard = () => {
                   className="flex items-center justify-between bg-blue-50 p-4 rounded-lg border border-blue-100"
                 >
                   <div>
-                    <h3 className="font-semibold text-blue-700">{video.title}</h3>
-                    <p className="text-sm text-slate-500">{video.description}</p>
+                    <h3 className="font-semibold text-blue-700">
+                      {video.title}
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      {video.description}
+                    </p>
                   </div>
 
                   <span

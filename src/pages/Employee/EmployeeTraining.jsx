@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { PlayCircle, Film, Loader2 } from "lucide-react";
+import { PlayCircle, Loader2 } from "lucide-react";
 import { authFetch } from "../../utils/api";
 
 export default function EmployeeTraining() {
@@ -10,7 +10,9 @@ export default function EmployeeTraining() {
   useEffect(() => {
     async function load() {
       try {
+        // Backend already returns ONLY assigned videos
         const data = await authFetch("/api/employee/training");
+
         setVideos(data);
       } catch (err) {
         console.error("Training load error:", err);
@@ -30,7 +32,6 @@ export default function EmployeeTraining() {
 
   return (
     <div className="space-y-8">
-      {/* HEADER */}
       <div>
         <h1 className="text-3xl font-bold text-blue-700">Training Videos</h1>
         <p className="text-slate-600 mt-1">
@@ -38,10 +39,9 @@ export default function EmployeeTraining() {
         </p>
       </div>
 
-      {/* TRAINING VIDEOS GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {videos.length === 0 && (
-          <p className="text-slate-600">No training videos available.</p>
+          <p className="text-slate-600">No assigned training videos.</p>
         )}
 
         {videos.map((video) => (
@@ -49,16 +49,17 @@ export default function EmployeeTraining() {
             key={video._id}
             className="bg-white rounded-xl border border-blue-100 shadow-sm overflow-hidden hover:shadow-md transition"
           >
-            {/* Thumbnail */}
             <div className="w-full h-40 bg-slate-200 overflow-hidden">
               <img
-                src={video.thumbnailUrl}
+                src={
+                  video.thumbnailUrl ||
+                  "https://dummyimage.com/600x350/1e40af/ffffff&text=Training+Video"
+                }
                 alt="thumbnail"
                 className="w-full h-full object-cover"
               />
             </div>
 
-            {/* Info */}
             <div className="p-4 space-y-2">
               <h3 className="text-lg font-semibold text-blue-700">
                 {video.title}
