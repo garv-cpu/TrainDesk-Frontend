@@ -45,17 +45,33 @@ import { PricingContext } from "./utils/PricingContext";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import EmployeeSOPListPage from "./pages/Employee/EmployeeSOPListPage";
 import TrainingPlayer from "./pages/TrainingPlayer";
+import DemoDashboard from "./pages/demo/DemoDashboard";
+import DemoEmployees from "./pages/demo/DemoEmployees";
+import DemoTraining from "./pages/demo/DemoTraining";
+import DemoSOPList from "./pages/demo/DemoSOPList";
+import DemoReports from "./pages/demo/DemoReports";
+import DemoLayout from "./pages/demo/DemoLayout";
 
 
 export default function App() {
   const { isPricingOpen, closePricing } = useContext(PricingContext);
-  ;
+
   return (
     <>
       <Toaster position="top-center" />
       <PricingModal open={isPricingOpen} onClose={closePricing} />
 
+
       <Routes>
+        <Route path="/demo" element={<DemoLayout />}>
+          <Route index element={<DemoDashboard />} />
+          <Route path="employees" element={<DemoEmployees />} />
+          <Route path="training" element={<DemoTraining />} />
+          <Route path="sops" element={<DemoSOPList />} />
+          <Route path="reports" element={<DemoReports />} />
+        </Route>
+
+
 
         {/* PUBLIC */}
         <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />

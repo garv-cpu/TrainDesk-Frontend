@@ -75,6 +75,7 @@ export default function Header({ openSidebar }) {
         return "User";
     };
 
+
     const goToItem = (item) => {
         setShowDropdown(false);
         setQuery("");
@@ -128,21 +129,24 @@ export default function Header({ openSidebar }) {
                 </div>
 
                 {/* PROFILE (MOBILE DROPDOWN) */}
+                {/* PROFILE AVATAR (MOBILE + DESKTOP) */}
                 <div
-                    className="relative sm:hidden cursor-pointer"
+                    className="relative cursor-pointer"
                     onClick={() => setProfileDropdown(!profileDropdown)}
                     ref={profileRef}
                 >
                     {user?.photoURL ? (
+                        // GOOGLE USER IMAGE
                         <img
                             src={`${user.photoURL}?sz=200`}
-                            alt="Profile"
+                            alt="User"
                             className="w-10 h-10 rounded-full object-cover border shadow-sm"
                             referrerPolicy="no-referrer"
                         />
                     ) : (
-                        <div className="px-4 py-2 bg-blue-600 text-white rounded-full font-medium whitespace-nowrap">
-                            {getFallbackName()}
+                        // NAME CIRCLE FOR EMAIL/PASSWORD USERS
+                        <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 text-white font-semibold shadow-sm">
+                            {getFallbackName().charAt(0)}
                         </div>
                     )}
 
@@ -157,6 +161,7 @@ export default function Header({ openSidebar }) {
                         </div>
                     )}
                 </div>
+
 
                 {/* DESKTOP LOGOUT BUTTON */}
                 <button

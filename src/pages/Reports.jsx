@@ -271,29 +271,37 @@ export default function Reports() {
   // Derived chart data
   // ---------------------------
   const trainingsTimeSeries = useMemo(() => {
-    // build daily series between dateFrom and dateTo
     const start = new Date(dateFrom + "T00:00:00Z");
     const end = new Date(dateTo + "T23:59:59Z");
+
     const days = [];
     const map = {};
+
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       const key = format(new Date(d), "yyyy-MM-dd");
       days.push(key);
-      map[key] = { date: key, completed: 0, active: 0 };
+      map[key] = { date: key, active: 0 };
     }
 
     trainings.forEach((t) => {
       const created = t.createdAt ? new Date(t.createdAt) : null;
       if (!created) return;
+
       const key = format(new Date(created), "yyyy-MM-dd");
-      if (map[key]) {
-        if (t.status === "completed") map[key].completed++;
-        else map[key].active++;
-      }
+
+      // REMOVE completed trainings
+      if (t.status === "completed") return;
+
+      // Count ONLY active
+      if (map[key]) map[key].active++;
     });
 
-    return days.map((d) => map[d]);
+    // REMOVE gap days with zero data
+    return days
+      .map((d) => map[d])
+      .filter((row) => row.active > 0);
   }, [trainings, dateFrom, dateTo]);
+
 
   const sopByDept = useMemo(() => {
     const counts = {};
@@ -548,10 +556,9 @@ export default function Reports() {
       </div>
 
       {/* KPI Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <KPICard title="Total Employees" value={(stats && stats.employees) ?? "-"} />
         <KPICard title="Active Trainings" value={(stats && stats.activeTrainings) ?? "-"} />
-        <KPICard title="Completed Trainings" value={(stats && stats.completedTrainings) ?? "-"} />
         <KPICard title="Pending SOPs" value={(stats && stats.pendingSOPs) ?? "-"} />
       </div>
 
@@ -571,7 +578,7 @@ export default function Reports() {
 
             <TrainingsCompletionLine data={trainingsTimeSeries} />
           </div>
-{/* 
+          {/* 
           <div className="bg-white p-4 rounded-xl shadow border">
             <SectionTitle title="Top Performers (by completed trainings)" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

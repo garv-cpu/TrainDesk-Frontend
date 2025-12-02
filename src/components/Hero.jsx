@@ -41,7 +41,12 @@ const Hero = () => {
             <a className="hover:text-blue-600" onClick={openPricing}>
               Pricing
             </a>
-
+            <a
+              className="hover:text-blue-600 cursor-pointer"
+              onClick={() => navigate("/demo")}
+            >
+              Try Demo
+            </a>
             <button
               onClick={handleAction}
               className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
@@ -89,7 +94,15 @@ const Hero = () => {
               >
                 Dashboard
               </a>
-
+              <a
+                className="hover:text-blue-600"
+                onClick={() => {
+                  setMobileOpen(false);
+                  navigate("/demo");
+                }}
+              >
+                Try Demo
+              </a>
               <button
                 onClick={() => {
                   setMobileOpen(false);
@@ -128,6 +141,13 @@ const Hero = () => {
             >
               Get Lifetime Access
             </button>
+            <button
+              onClick={() => navigate("/demo")}
+              className="ml-4 px-6 py-3 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300 shadow-lg transition"
+            >
+              Try Demo
+            </button>
+
           </div>
 
           {/* Mini Features */}
@@ -240,8 +260,8 @@ const Hero = () => {
               <div className="flex justify-center md:justify-end">
                 <button
                   onClick={() =>
-                    (window.location.href =
-                      "https://payments.cashfree.com/links?code=X9i9fblgs450_AAAAAAAPFIU")
+                  (window.location.href =
+                    "https://payments.cashfree.com/links?code=X9i9fblgs450_AAAAAAAPFIU")
                   }
                   className="w-full md:w-auto px-8 py-4 bg-blue-600 text-white rounded-lg text-lg font-medium hover:bg-blue-700 transition"
                 >
