@@ -3,17 +3,15 @@ import { usePricing } from "../utils/PricingContext";
 import { useNavigate } from "react-router-dom";
 
 export default function usePricingOrLogin() {
-  const { user } = useAuth();
+  const { user, role } = useAuth();   // <-- role must come from your context
   const { openPricing } = usePricing();
   const navigate = useNavigate();
 
   return () => {
-    if (user) {
-      // If logged in → go to dashboard
-      navigate("/dashboard");
+    if (user && role === "admin") {
+      navigate("/dashboard");  // logged in admin → dashboard
     } else {
-      // If not logged in → open pricing modal
-      openPricing();
+      openPricing();           // not admin or not logged in → pricing modal
     }
   };
 }
