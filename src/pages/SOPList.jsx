@@ -91,6 +91,7 @@ export default function SOPList() {
                     <option value="">All Departments</option>
                     <option value="Operations">Operations</option>
                     <option value="Customer Service">Customer Service</option>
+                    <option value="HR">HR</option>
                     <option value="Safety">Safety</option>
                 </select>
 

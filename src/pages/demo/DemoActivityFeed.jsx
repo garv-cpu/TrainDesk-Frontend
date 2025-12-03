@@ -9,8 +9,8 @@ export default function DemoActivityFeed() {
         const demo = [
             { message: "New training video uploaded: Workplace Safety 101", createdAt: "2025-02-10T12:21:00" },
             { message: "New SOP created: Customer Handling Procedure", createdAt: "2025-02-10T11:45:00" },
+            { message: 'Rajesh Completed "Safety Guidelines" ', createdAt: "2025-02-09T16:00:00" },
             { message: "SOP updated: Safety Guidelines v2.0", createdAt: "2025-02-10T10:15:00" },
-            { message: "Training video removed: Onboarding Introduction", createdAt: "2025-02-09T16:00:00" },
             { message: "New employee added: John Parker", createdAt: "2025-02-09T13:27:00" },
             { message: "Employee removed: Sarah Wilson", createdAt: "2025-02-08T09:10:00" },
             { message: "SOP deleted: Warehouse Checklist", createdAt: "2025-02-07T17:40:00" },

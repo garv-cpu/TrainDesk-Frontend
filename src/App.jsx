@@ -82,7 +82,15 @@ export default function App() {
         <Route path="/payment-success" element={<PaymentSuccess />} />
 
         {/* EMPLOYEE LOGIN */}
-        <Route path="/employee/login" element={<EmployeeLogin />} />
+        <Route
+          path="/employee/login"
+          element={
+            <EmployeePrivateRoute loginRoute>
+              <EmployeeLogin />
+            </EmployeePrivateRoute>
+          }
+        />
+
 
         {/* EMPLOYEE AUTH + DASHBOARD */}
         <Route path="/employee"
@@ -137,41 +145,6 @@ export default function App() {
             <Route path="view/:id" element={<ViewSOP />} />
           </Route>
         </Route>
-
-        {/* EMPLOYEE DASHBOARD */}
-        <Route path="/dashboard"
-          element={
-            <PrivateRoute>
-              <DashboardLayout />
-            </PrivateRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
-
-          <Route path="employees">
-            <Route index element={<Employees />} />
-            <Route path="create" element={<CreateEmployee />} />
-            <Route path="edit/:id" element={<EditEmployee />} />
-          </Route>
-
-          <Route path="training" element={<Training />} />
-          <Route path="training/:id" element={<TrainingPlayer />} />   {/* FIXED */}
-
-          <Route path="reports" element={<Reports />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="roles" element={<Roles />} />
-          <Route path="notifications" element={<Notifications />} />
-          <Route path="training-progress" element={<EmployeeTrainingProgress />} />
-
-          <Route path="sops">
-            <Route index element={<SOPList />} />
-            <Route path="create" element={<CreateSOP />} />
-            <Route path="edit/:id" element={<EditSOP />} />
-            <Route path="view/:id" element={<ViewSOP />} />
-          </Route>
-        </Route>
-
-
       </Routes>
     </>
   );

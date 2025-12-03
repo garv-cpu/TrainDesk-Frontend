@@ -88,6 +88,7 @@ export default function CreateSOP() {
           <option value="">Select Department</option>
           <option value="Operations">Operations</option>
           <option value="Customer Service">Customer Service</option>
+          <option value="HR">HR</option>
           <option value="Safety">Safety</option>
         </select>
 

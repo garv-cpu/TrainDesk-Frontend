@@ -25,8 +25,10 @@ export default function CreateEmployee() {
     try {
       const res = await authFetch("/api/employees", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+
 
       toast.success("Employee created!");
 
@@ -36,7 +38,7 @@ export default function CreateEmployee() {
         });
       }
 
-     navigate("/dashboard/employees");
+      navigate("/dashboard/employees");
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Failed to create employee");

@@ -16,6 +16,26 @@ export default function EmployeeQuiz() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
+    const videoEl = document.querySelector("video");
+    if (!videoEl) return;
+
+    const interval = setInterval(async () => {
+      const percent = Math.round(
+        (videoEl.currentTime / videoEl.duration) * 100
+      );
+
+      if (percent > 0 && percent < 100) {
+        await authFetch("/api/employee/training/progress", {
+          method: "POST",
+          body: JSON.stringify({ videoId: id, percent }),
+        });
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [id]);
+
+  useEffect(() => {
     if (video) {
       console.log("Video quiz data:", video.quiz);
     }
@@ -58,18 +78,16 @@ export default function EmployeeQuiz() {
   // -------------------------------
   const saveProgress = async () => {
     try {
-      await authFetch(`/api/employee/progress`, {
+      await authFetch("/api/employee/training/complete", {
         method: "POST",
-        body: JSON.stringify({
-          videoId: id,
-          completed: true,
-        }),
+        body: JSON.stringify({ videoId: id }),
       });
       setProgressSaved(true);
     } catch (err) {
-      console.error(err);
+      console.error("Progress save error:", err);
     }
   };
+
 
   // -------------------------------
   // Handle quiz answer change
