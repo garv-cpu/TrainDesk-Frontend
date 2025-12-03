@@ -14,7 +14,6 @@ import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import Roles from "./pages/Roles";
 import Notifications from "./pages/Notifications";
-import EmployeeTrainingProgress from "./pages/EmployeeTrainingProgress";
 
 // SOP CRUD
 import CreateSOP from "./pages/CreateSOP";
@@ -52,6 +51,8 @@ import DemoSOPList from "./pages/demo/DemoSOPList";
 import DemoReports from "./pages/demo/DemoReports";
 import DemoLayout from "./pages/demo/DemoLayout";
 import PrivacyPolicy from "./pages/policies/PrivacyPolicy";
+import AdminTrainingProgress from "./pages/AdminTrainingProgress";
+import DemoTrainingProgress from "./pages/demo/DemoTrainingProgress";
 
 
 export default function App() {
@@ -70,11 +71,10 @@ export default function App() {
           <Route index element={<DemoDashboard />} />
           <Route path="employees" element={<DemoEmployees />} />
           <Route path="training" element={<DemoTraining />} />
+          <Route path="/demo/training-progress" element={<DemoTrainingProgress />} />
           <Route path="sops" element={<DemoSOPList />} />
           <Route path="reports" element={<DemoReports />} />
         </Route>
-
-
 
         {/* PUBLIC */}
         <Route path="/" element={<PublicRoute><Home /></PublicRoute>} />
@@ -90,7 +90,6 @@ export default function App() {
             </EmployeePrivateRoute>
           }
         />
-
 
         {/* EMPLOYEE AUTH + DASHBOARD */}
         <Route path="/employee"
@@ -135,7 +134,7 @@ export default function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="roles" element={<Roles />} />
           <Route path="notifications" element={<Notifications />} />
-          <Route path="training-progress" element={<EmployeeTrainingProgress />} />
+          <Route path="training-progress" element={<AdminTrainingProgress />} />
 
           {/* SOP CRUD */}
           <Route path="sops">

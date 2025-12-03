@@ -15,6 +15,7 @@ export default function DemoSidebar({ isOpen, closeSidebar }) {
         { label: "Dashboard", icon: LayoutDashboard, path: "/demo" },
         { label: "Employees", icon: Users, path: "/demo/employees" },
         { label: "Training", icon: BookOpen, path: "/demo/training" },
+        { label: "Training Progress", icon: BarChart, path: "/demo/training-progress" },
         { label: "SOPs", icon: FileText, path: "/demo/sops" },
         { label: "Reports", icon: BarChart, path: "/demo/reports" },
     ];

@@ -16,6 +16,7 @@ export default function Sidebar({ isOpen, closeSidebar }) {
         { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
         { label: "Employees", icon: Users, path: "/dashboard/employees" },
         { label: "Training", icon: BookOpen, path: "/dashboard/training" },
+        { label: "Training Progress", icon: BarChart, path: "/dashboard/training-progress" },
         { label: "SOPs", icon: FileText, path: "/dashboard/sops" },
         { label: "Reports", icon: BarChart, path: "/dashboard/reports" },
     ];

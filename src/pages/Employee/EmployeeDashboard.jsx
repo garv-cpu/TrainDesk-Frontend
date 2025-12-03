@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { authFetch } from "../../utils/api";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "../../utils/AuthContext";
 
 const EmployeeDashboard = () => {
   const [assigned, setAssigned] = useState([]);
   const [progress, setProgress] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   const [completedCount, setCompletedCount] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
@@ -23,7 +25,11 @@ const EmployeeDashboard = () => {
         setProgress(progressRes);
 
         // 3. COUNTS
-        const completed = progressRes.filter((p) => p.completed).length;
+        // Only count completed that belong to assigned videos
+        const completed = progressRes.filter(
+          (p) => p.completed && assignedRes.some((a) => a._id === p.videoId)
+        ).length;
+
         const pending = assignedRes.length - completed;
 
         setCompletedCount(completed);
@@ -58,7 +64,10 @@ const EmployeeDashboard = () => {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-blue-700">Welcome Back 👋</h1>
+        <h1 className="text-3xl font-bold text-blue-700 flex items-center gap-2">
+          Welcome Back {user?.displayName} 👋
+        </h1>
+
         <p className="text-slate-600 mt-1">
           Here's your training overview for today.
         </p>
@@ -138,11 +147,10 @@ const EmployeeDashboard = () => {
                   </div>
 
                   <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      isCompleted
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-600"
-                    }`}
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${isCompleted
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-600"
+                      }`}
                   >
                     {isCompleted ? "Completed" : "Pending"}
                   </span>
