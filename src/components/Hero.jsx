@@ -117,6 +117,23 @@ const Hero = () => {
         )}
       </nav>
 
+      {/* PRODUCT HUNT BADGE */}
+      <div className="w-full flex justify-center py-3 bg-white">
+        <a
+          href="https://www.producthunt.com/products/traindesk?embed=true&utm_medium=badge&utm_source=badge-traindesk"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:scale-105 transition transform"
+        >
+          <img
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1045132&theme=light"
+            alt="TrainDesk Product Hunt Badge"
+            className="w-[250px] h-[54px]"
+          />
+        </a>
+      </div>
+
+
       {/* ---------------- HERO SECTION ---------------- */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-24 md:pb-32 grid md:grid-cols-2 gap-12 items-center">
 
